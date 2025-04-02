@@ -1,0 +1,4 @@
+apt install python2
+apt install libpython2.7
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 1
+./bombsquad_server
