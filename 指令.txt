@@ -16,8 +16,8 @@ ip link
 假设是 eth0，执行：
 sudo ethtool -G eth0 rx 4096 tx 4096
 
-#====================================
 nano /etc/sysctl.conf
+#====================================
 # bbr
 net.core.default_qdisc=cake
 net.ipv4.tcp_congestion_control=bbr
@@ -48,3 +48,5 @@ net.core.somaxconn = 65535
 # 降低延迟（特别对实时应用有效）
 net.ipv4.tcp_low_latency = 1
 #====================================
+sysctl -p
+
