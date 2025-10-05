@@ -10,11 +10,9 @@ pm2 start bombsquad_server --interpreter=python3
 #优化udp
 sudo iptables -t mangle -A OUTPUT -p udp --sport 27017 -j DSCP --set-dscp-class EF
 
-查看你的网卡名：
-ip link
+#禁用排队（虚拟网卡依然支持）
+tc qdisc del dev eth0 root 2>/dev/null
 
-假设是 eth0，执行：
-sudo ethtool -G eth0 rx 4096 tx 4096
 
 nano /etc/sysctl.conf
 #====================================
@@ -49,4 +47,5 @@ net.core.somaxconn = 65535
 net.ipv4.tcp_low_latency = 1
 #====================================
 sysctl -p
+
 
