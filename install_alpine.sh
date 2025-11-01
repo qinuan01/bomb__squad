@@ -3,7 +3,7 @@ set -e
 
 echo "===> 🔧 安装编译依赖..."
 apk add --no-cache build-base wget tar make gcc g++ musl-dev \
-    zlib-dev openssl-dev bzip2-dev readline-dev sqlite-dev
+    zlib-dev openssl-dev bzip2-dev readline-dev sqlite-dev gcompat
 
 echo "===> 📦 下载 Python 2.7.18 源码..."
 wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz -O Python-2.7.18.tgz
