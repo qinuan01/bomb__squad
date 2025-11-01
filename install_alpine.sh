@@ -11,7 +11,7 @@ tar -xzf Python-2.7.18.tgz
 cd Python-2.7.18
 
 echo "===> ⚙️ 配置编译选项..."
-./configure --prefix=/usr/local --enable-shared --without-ensurepip
+./configure --prefix=/usr/local --enable-shared --enable-unicode=ucs4 --without-ensurepip
 
 echo "===> 🧱 开始编译（可能需要几分钟）..."
 make -j1
