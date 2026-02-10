@@ -55,38 +55,31 @@ tc qdisc del dev eth0 root 2>/dev/null
 
 
 nano /etc/sysctl.conf
-#====================================
-# bbr
-net.core.default_qdisc=cake
-net.ipv4.tcp_congestion_control=bbr
-# 提高 UDP 缓冲区
+# ==== UDP/queue sane defaults ====
 net.core.rmem_max = 26214400
 net.core.wmem_max = 26214400
 net.core.rmem_default = 4194304
 net.core.wmem_default = 4194304
-
-# 提高 UDP 队列长度（防止丢包）
 net.core.netdev_max_backlog = 250000
-net.ipv4.udp_mem = 4096 87380 16777216
-
-# 减少包排队延迟
 net.ipv4.udp_rmem_min = 8192
 net.ipv4.udp_wmem_min = 8192
-
-# 启用快速重用端口
-net.ipv4.ip_local_port_range = 1024 65535
-net.ipv4.udp_l3mdev_accept = 1
-
-# 禁止源路由检查
-net.ipv4.conf.all.accept_source_route = 0
-
-# 提高 socket accept queue
 net.core.somaxconn = 65535
+net.ipv4.ip_local_port_range = 1024 65535
+net.ipv4.conf.all.accept_source_route = 0
+# =================================
 
-# 降低延迟（特别对实时应用有效）
-net.ipv4.tcp_low_latency = 1
-#====================================
 sysctl -p
+
+set -e
+
+# 1) 清掉旧的 qdisc（可选）
+sudo tc qdisc del dev eth0 root 2>/dev/null || true
+
+# 2) 上 cake：按 100M 链路建议给 95M 留余量
+sudo tc qdisc replace dev eth0 root cake bandwidth 95mbit besteffort nat
+
+# 3) 查看是否生效
+sudo tc -s qdisc show dev eth0
 
 
 
