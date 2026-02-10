@@ -6,6 +6,46 @@ sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 1
 
 pm2 start bombsquad_server --interpreter=python3
 
+=============
+#编译安装python2
+set -euo pipefail
+
+# 1) 编译依赖（你装过也没关系）
+sudo apt update
+sudo apt install -y build-essential wget ca-certificates \
+  libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev \
+  libffi-dev libncursesw5-dev libgdbm-dev liblzma-dev tk-dev uuid-dev \
+  xz-utils
+
+# 2) 重新下载并用 UCS4 方式编译安装（覆盖 /usr/local/python2.7）
+cd /tmp
+rm -rf Python-2.7.18 Python-2.7.18.tgz
+wget -O Python-2.7.18.tgz https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
+tar -xf Python-2.7.18.tgz
+cd Python-2.7.18
+
+make distclean >/dev/null 2>&1 || true
+
+./configure --prefix=/usr/local/python2.7 \
+  --enable-shared \
+  --enable-unicode=ucs4 \
+  LDFLAGS="-Wl,-rpath,/usr/local/python2.7/lib"
+
+make -j"$(nproc)"
+sudo make install
+
+# 3) 刷新动态库缓存 & python2 链接
+echo "/usr/local/python2.7/lib" | sudo tee /etc/ld.so.conf.d/python2.7.conf >/dev/null
+sudo ldconfig
+sudo ln -sf /usr/local/python2.7/bin/python2.7 /usr/local/bin/python2
+
+# 4) 验证：必须是 1114111 才对（UCS4）
+python2 -c "import sys; print(sys.version); print('maxunicode=', sys.maxunicode)"
+
+# 5) 看看符号是否存在（可选但很有用）
+nm -D /usr/local/python2.7/lib/libpython2.7.so.1.0 | grep PyUnicodeUCS4_FromString || true
+=======================
+
 
 #优化udp
 sudo iptables -t mangle -A OUTPUT -p udp --sport 27017 -j DSCP --set-dscp-class EF
@@ -47,5 +87,6 @@ net.core.somaxconn = 65535
 net.ipv4.tcp_low_latency = 1
 #====================================
 sysctl -p
+
 
 
