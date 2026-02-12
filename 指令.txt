@@ -35,9 +35,10 @@ make -j"$(nproc)"
 sudo make install
 
 # 3) 刷新动态库缓存 & python2 链接
-echo "/usr/local/python2.7/lib" | sudo tee /etc/ld.so.conf.d/python2.7.conf >/dev/null
-sudo ldconfig
-sudo ln -sf /usr/local/python2.7/bin/python2.7 /usr/local/bin/python2
+echo "/usr/local/python2.7/lib" > /etc/ld.so.conf.d/python2.7.conf
+ldconfig
+ln -sf /usr/local/python2.7/bin/python2.7 /usr/local/bin/python2.7
+ln -sf /usr/local/python2.7/bin/python2.7 /usr/local/bin/python2
 
 # 4) 验证：必须是 1114111 才对（UCS4）
 python2 -c "import sys; print(sys.version); print('maxunicode=', sys.maxunicode)"
