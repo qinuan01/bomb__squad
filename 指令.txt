@@ -39,6 +39,7 @@ echo "/usr/local/python2.7/lib" > /etc/ld.so.conf.d/python2.7.conf
 ldconfig
 ln -sf /usr/local/python2.7/bin/python2.7 /usr/local/bin/python2.7
 ln -sf /usr/local/python2.7/bin/python2.7 /usr/local/bin/python2
+ln -sf /usr/local/bin/python2 /usr/local/bin/python
 
 # 4) 验证：必须是 1114111 才对（UCS4）
 python2 -c "import sys; print(sys.version); print('maxunicode=', sys.maxunicode)"
@@ -81,6 +82,7 @@ sudo tc qdisc replace dev eth0 root cake bandwidth 95mbit besteffort nat
 
 # 3) 查看是否生效
 sudo tc -s qdisc show dev eth0
+
 
 
 
